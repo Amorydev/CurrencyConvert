@@ -10,6 +10,9 @@ fun main() {
     println("1. Calculator total value of products")
     println("2. Find the most expensive product")
     println("3. Check if a product name exists")
+    println("4. Sort products by price")
+    println("5. Sort products by quantity")
+    println("----------------------------------")
 
     val scanner = Scanner(System.`in`)
 
@@ -20,7 +23,23 @@ fun main() {
         1 -> calculatorTotalValueProduct(product)
         2 -> findExpensiveProduct(product)
         3 -> existsProductName(product)
+        4 -> sortProductByPrice(product)
+        5 -> sortProductByQuantity(product)
         else -> println("Invalid choice")
+    }
+}
+
+fun sortProductByQuantity(product: List<Product>) {
+    val sortedProduct = product.sortedBy { it.quantity }
+    sortedProduct.forEach {
+        println("${it.name} - ${it.quantity}")
+    }
+}
+
+fun sortProductByPrice(product: List<Product>) {
+    val sortedProduct = product.sortedBy { it.price }
+    sortedProduct.forEach {
+        println("${it.name} - ${it.price}")
     }
 }
 
