@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.amory.currencyconvert.databinding.ActivityMainBinding
 import com.amory.currencyconvert.utils.Utils
 import com.amory.currencyconvert.viewModel.MainViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -27,9 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpClickListener() {
         binding.btnConvert.setOnClickListener {
-            val fromCurrencyCode = binding.spnFrom.selectedItem.toString()
             val toCurrencyCode = binding.spnTo.selectedItem.toString()
-            viewModel.fetchDataRateCurrency(fromCurrencyCode)
             convertToAmount(toCurrencyCode)
         }
         binding.imbSwap.setOnClickListener {
@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
             val toCurrency = binding.spnTo.selectedItemPosition
             binding.spnFrom.setSelection(toCurrency)
             binding.spnTo.setSelection(fromCurrency)
+
+            val fromCurrencyCode = binding.spnFrom.selectedItem.toString()
+            viewModel.fetchDataRateCurrency(fromCurrencyCode)
         }
     }
 
@@ -47,6 +50,10 @@ class MainActivity : AppCompatActivity() {
             val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, listCurrencies)
             binding.spnFrom.adapter = adapter
             binding.spnTo.adapter = adapter
+            val fromCurrencyCode = binding.spnFrom.selectedItem?.toString()
+            if (fromCurrencyCode != null) {
+                viewModel.fetchDataRateCurrency(fromCurrencyCode)
+            }
         }
 
         viewModel.list.observe(this) { list ->
@@ -72,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         if (listCurrency.containsKey(toCurrencyCode)) {
             val rate = listCurrency[toCurrencyCode] ?: 1.0
             val totalAmount = rate * amount
-            binding.amountConvert.text = String.format("%.2f", totalAmount)
+            binding.amountConvert.text = NumberFormat.getInstance(Locale.US).format(totalAmount)
         } else {
             binding.amountConvert.text = "Currency not available"
         }
